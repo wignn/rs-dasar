@@ -55,3 +55,13 @@ fn oprations(){
     let d = x % y;
     println!("z: {}, a: {}, b: {}, c: {}, d: {}", z, a, b, c, d);
 }
+
+#[test]
+fn tuppel (){
+    let tup = (500, 6.4, 1, true);
+    println!("x: {:?}", tup.0);
+    let (x, y, z, a) = tup;
+    println!("x: {}, y: {}, z: {}, a: {}", x, y, z, a);
+    let (d, s, _, _) = tup;
+    println!("d: {}, s: {}", d, s);
+}

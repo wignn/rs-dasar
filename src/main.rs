@@ -1,3 +1,4 @@
+
 fn main() {
     let x = 10;
     let y = 20;
@@ -81,7 +82,7 @@ fn unit() {
 }
 
 #[test]
-fn testUnit() {
+fn test_unit() {
     let result = unit();
     println!("result: {:?}", result);
 }
@@ -157,7 +158,7 @@ fn b() {
 }
 
 #[test]
-fn stringS() {
+fn strings() {
     let s = String::from("hello");
     println!("{}", s);
 
@@ -180,4 +181,265 @@ fn string() {
 
     let new = name.replace("doe", "smith");
     println!("{}", new);
+}
+
+#[test]
+fn ownership() {
+    let a = 10;
+    {
+        let b = 20;
+        println!("{}", b);
+    } // setelah scope ini b akan dihapus dari memory karna sudah tidak terpakai
+    println!("{}", a);
+} // setelah scope ini a akan dihapus dari memory karna sudah tidak terpakai
+#[test]
+fn data_copy() {
+    let a = 10;
+    let b = a;
+    println!("a: {}, b: {}", a, b);
+}
+
+#[test]
+fn ownership_movement() {
+    let a = String::from("hello");
+    let b = a;
+    println!("{}", b);
+    // println!("{}", a);
+}
+
+#[test]
+fn ownership_clone() {
+    let a = String::from("hello");
+    let b = a.clone();
+    println!("a: {}, b: {}", a, b);
+}
+
+#[test]
+fn if_statement() {
+    let a = 10;
+    let result: &str;
+    if a > 10 {
+        result = "a lebih dari 10";
+    } else if a < 10 {
+        result = "a kurang dari 10";
+    } else {
+        result = "a sama dengan 10";
+    }
+    println!("{}", result);
+
+    let result = if a > 10 {
+        "a lebih dari 10"
+    } else if a < 10 {
+        "a kurang dari 10"
+    } else {
+        "a sama dengan 10"
+    };
+    println!("{}", result);
+}
+
+#[test]
+fn loop_statment() {
+    let mut init = 0;
+
+    loop {
+        init += 1;
+        println!("iterasi ke {}", init);
+        if init > 10 {
+            break;
+        } else {
+            continue;
+        }
+    }
+
+    let mut init = 0;
+    let result = loop {
+        init += 1;
+        if init > 10 {
+            break init;
+        } else if init % 2 == 0 {
+            println!("genap {}", init);
+            continue;
+        }
+        {}
+    };
+    println!("{}", result);
+}
+
+#[test]
+fn while_loop() {
+    let array = ["a", "b", "c", "d"];
+    let mut i = 0;
+    while i < array.len() {
+        println!("{}", array[i]);
+        i += 1;
+    }
+}
+
+#[test]
+fn for_loop() {
+    let array = ["a", "b", "c", "d"];
+
+    for value in array {
+        println!("{}", value);
+    }
+}
+
+#[test]
+fn for_loop_with_range_exclusif() {
+    let array = ["a", "b", "c", "d"];
+    // let range = 0..array.len();
+
+    for i in 0..4 {
+        println!("{}", array[i]);
+    }
+}
+
+#[test]
+fn for_loop_with_range_inclusif() {
+    let array = ["a", "b", "c", "d"];
+    // let range = 0..array.len();
+
+    for i in 0..=3 {
+        println!("{}", array[i]);
+    }
+}
+
+fn say_hello(text: &str) {
+    println!("{}", text);
+}
+
+#[test]
+fn function() {
+    say_hello("hello");
+}
+
+#[test]
+fn function_with_return() {
+    calculate(1, 20);
+}
+
+fn calculate(a: i32, b: i32) -> i32 {
+    for i in a..b {
+        if i % 2 == 0 {
+            println!("{}", i);
+        } else {
+            continue;
+        }
+    }
+    return a + b;
+}
+
+#[test]
+fn function_with_owneship() {
+    let a = String::from("hello");
+    let b = String::from("world");
+    let result = combine(&a, &b);
+    // println!("{}", a);
+    println!("{}", result);
+}
+
+fn combine(a: &String, b: &String) -> String {
+    let result = format!("{} {}", a, b);
+    return result;
+}
+
+#[test]
+fn pointer_reference() {
+    let a = String::from("hello");
+    let b = String::from("world");
+    let result = combine(&a, &b);
+    println!("{}", a);
+    println!("{}", b);
+    // println!("{}", a);
+    println!("{}", result);
+}
+
+#[test]
+fn borrowing_test() {
+    let mut a = String::from("hello ");
+    borrowing(&mut a);
+    println!("ini adalah mut pointer: {}", a);
+}
+
+fn borrowing(a: &mut String){
+    //secara default borrowing adalah immutable
+     a.push_str("world");
+}
+
+
+#[test]
+fn slice_test() {
+    let array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    //selice is a reference to a part of a string
+    let slice_full = &array[..];
+    println!("slice 1: {:?}", slice_full);
+
+    let slice_to_end = &array[5..];
+    println!("slice 2: {:?}", slice_to_end);
+
+    let slice_to_start = &array[..5];
+    println!("slice 3: {:?}", slice_to_start);
+}
+
+
+#[test]
+fn string_slice (){
+    let s = String::from("hello world");
+    let hello = &s[0..5];
+    let world = &s[6..11];
+    println!("{} {}", hello, world);
+}
+
+
+struct User {
+    username: String,
+    email: String,
+    sign_in_count: u64,
+    active: bool,
+}
+
+#[test]
+fn struct_test(){
+let mut users = [
+    User {
+        username: String::from("example1"),
+        email: String::from("example1@example.com"),
+        sign_in_count: 1,
+        active: true,
+    },
+    User {
+        username: String::from("example2"),
+        email: String::from("example2@example.com"),
+        sign_in_count: 2,
+        active: false,
+    },
+];
+
+
+
+for user in &users {
+    parameter_struct(&user);
+}
+}
+
+
+fn parameter_struct(users: &User){
+    println!("{}, {}, {}, {}", users.username, users.email, users.sign_in_count, users.active);
+}
+
+
+struct  GeoPoint(f64, f64);
+
+#[test]
+fn struct_tupe(){
+    let point = GeoPoint(10.0, 20.0);
+    println!("{}, {}", point.0, point.1);
+}
+
+
+struct nothing;
+#[test]
+fn struct_without_field(){
+    let _black = nothing;
+
 }

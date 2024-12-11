@@ -1,3 +1,46 @@
+mod model {
+    pub struct UserMod {
+        pub name: String,
+        pub age: u32,
+    }
+    impl UserMod {
+        pub fn get_name(&self) -> &str {
+            &self.name
+        }
+
+        pub fn get_age(&self) -> u32 {
+            self.age
+        }
+    }
+}
+
+mod secound; 
+use secound::*;
+
+#[test]
+fn t(){
+    test_module();
+    test_module2();
+}
+
+
+mod math {
+    pub fn add(a: i32, b: i32) -> i32 {
+        a + b
+    }
+    pub fn sub(a: i32, b: i32) -> i32 {
+        a - b
+    }
+}
+
+#[test]
+fn use_module() {
+    use math::add;
+    use math::sub as subtract;
+    let result = add(10, 20);
+    let result2 = subtract(20, 10);
+    println!("hasil pertamvbahan: {}, hasil kedua: {}", result, result2);
+}
 
 fn main() {
     let x = 10;
@@ -361,11 +404,10 @@ fn borrowing_test() {
     println!("ini adalah mut pointer: {}", a);
 }
 
-fn borrowing(a: &mut String){
+fn borrowing(a: &mut String) {
     //secara default borrowing adalah immutable
-     a.push_str("world");
+    a.push_str("world");
 }
-
 
 #[test]
 fn slice_test() {
@@ -381,15 +423,13 @@ fn slice_test() {
     println!("slice 3: {:?}", slice_to_start);
 }
 
-
 #[test]
-fn string_slice (){
+fn string_slice() {
     let s = String::from("hello world");
     let hello = &s[0..5];
     let world = &s[6..11];
     println!("{} {}", hello, world);
 }
-
 
 struct User {
     username: String,
@@ -399,47 +439,252 @@ struct User {
 }
 
 #[test]
-fn struct_test(){
-let mut users = [
-    User {
-        username: String::from("example1"),
-        email: String::from("example1@example.com"),
-        sign_in_count: 1,
-        active: true,
-    },
-    User {
-        username: String::from("example2"),
-        email: String::from("example2@example.com"),
-        sign_in_count: 2,
-        active: false,
-    },
-];
+fn struct_test() {
+    let mut users = [
+        User {
+            username: String::from("example1"),
+            email: String::from("example1@example.com"),
+            sign_in_count: 1,
+            active: true,
+        },
+        User {
+            username: String::from("example2"),
+            email: String::from("example2@example.com"),
+            sign_in_count: 2,
+            active: false,
+        },
+    ];
 
-
-
-for user in &users {
-    parameter_struct(&user);
-}
+    for user in &users {
+        parameter_struct(&user);
+    }
 }
 
-
-fn parameter_struct(users: &User){
-    println!("{}, {}, {}, {}", users.username, users.email, users.sign_in_count, users.active);
+fn parameter_struct(users: &User) {
+    println!(
+        "{}, {}, {}, {}",
+        users.username, users.email, users.sign_in_count, users.active
+    );
 }
 
-
-struct  GeoPoint(f64, f64);
+struct GeoPoint(f64, f64);
 
 #[test]
-fn struct_tupe(){
+fn struct_tupe() {
     let point = GeoPoint(10.0, 20.0);
     println!("{}, {}", point.0, point.1);
 }
 
-
 struct nothing;
 #[test]
-fn struct_without_field(){
+fn struct_without_field() {
     let _black = nothing;
+}
 
+struct method {
+    username: String,
+    email: String,
+    sign_in_count: u64,
+    active: bool,
+}
+
+#[test]
+fn struct_method() {
+    let user = method {
+        username: String::from("example"),
+        email: String::from("exampke"),
+        sign_in_count: 1,
+        active: true,
+    };
+
+    let user2 = method::new(String::from("example"), String::from("testing"));
+    println!("{}", user.notif());
+    println!("{}", user2.notif());
+}
+impl method {
+    fn new(username: String, email: String) -> method {
+        method {
+            username,
+            email,
+            sign_in_count: 0,
+            active: false,
+        }
+    }
+
+    fn parameter(&self) {
+        println!(
+            "{}, {}, {}, {}",
+            self.username, self.email, self.sign_in_count, self.active
+        );
+    }
+
+    fn update_email(&mut self, email: String) {
+        self.email = email;
+    }
+
+    fn notif(&self) -> String {
+        format!("{} {}", self.username, self.email)
+    }
+}
+
+enum Kartu {
+    Visa(String, String),
+    MasterCard(String, String),
+}
+
+#[test]
+fn enum_test() {
+    let _kartus = Kartu::Visa(String::from("1234"), String::from("budi"));
+}
+
+impl Kartu {
+    fn new_visa(card_number: String, name: String) -> Kartu {
+        Kartu::Visa(card_number, name)
+    }
+
+    fn new_mastercard(card_number: String, name: String) -> Kartu {
+        Kartu::MasterCard(card_number, name)
+    }
+}
+
+enum level {
+    Regular,
+    Premium,
+    Platinum,
+}
+
+#[test]
+fn enum_imp_test_macthing() {
+    let level = level::Premium;
+    match level {
+        level::Regular => {
+            println!("regular");
+        }
+        level::Premium => {
+            println!("premium");
+        }
+        level::Platinum => {
+            println!("platinum");
+        }
+    }
+}
+
+#[test]
+fn destructur_enum_with_impl() {
+    let card = Kartu::Visa(String::from("customer1"), String::from("123"));
+    card.pay(String::from("name"), String::from("nomer"));
+    let card = Kartu::MasterCard(String::from("mr amba"), String::from("2113"));
+}
+
+impl Kartu {
+    fn pay(&self, name: String, nomer: String) -> () {
+        match self {
+            Kartu::Visa(name, number) => {
+                println!("Visa paying with {} with customer name {}", name, number)
+            }
+            Kartu::MasterCard(name, number) => {
+                println!(
+                    "MasterCard paying with {} with customer name {}",
+                    name, number
+                )
+            }
+        }
+    }
+}
+
+#[test]
+fn patren_macthiing() {
+    let name = "agus";
+
+    match name {
+        "agus" => println!("hello agus"),
+        "budi" => println!("hello budi"),
+        _ => println!("hello stranger"),
+    }
+}
+
+#[test]
+fn multiple_pattren() {
+    let name = "budi";
+
+    match name {
+        "agus" | "budi" => println!("hello employee"),
+        _ => println!("hello stranger"),
+    }
+}
+
+#[test]
+fn range_pattren() {
+    let age = 0;
+
+    match age {
+        0..=10 => println!("child"),
+        11..=20 => println!("teenager"),
+        21..=30 => println!("adult"),
+        _ => println!("dead"),
+    }
+}
+
+struct Person {
+    username: String,
+    email: String,
+    sign_in_count: u64,
+    active: bool,
+}
+
+#[test]
+fn destructoring_struct_pattren() {
+    let point = GeoPoint(20.0, 20.0);
+
+    let users = Person {
+        username: String::from("example"),
+        email: String::from("ambagus"),
+        sign_in_count: 1,
+        active: true,
+    };
+
+    match point {
+        GeoPoint(long, 0.0) => println!("longitude {}", long),
+        GeoPoint(20.0, la) => println!("latitude {}", la),
+        GeoPoint(long, la) => println!("longitude {} latitude {}", long, la),
+    }
+
+    match users {
+        Person {
+            username, email, ..
+        } => {
+            println!(" {}, {}", username, email)
+        }
+    }
+}
+
+#[test]
+fn ignoring() {
+    let point = GeoPoint(20.0, 20.0);
+
+    match point {
+        GeoPoint(_, 0.0) => println!("longitude"),
+        GeoPoint(20.0, _) => println!("latitude"),
+        GeoPoint(_, _) => println!("longitude latitude"),
+    }
+}
+
+#[test]
+fn macth_expresion() {
+    let name = "agus";
+    let res = match name {
+        "agus" => "hello agus",
+        "budi" => "hello budi",
+        _ => "hello stranger",
+    };
+
+    println!("{}", res);
+}
+
+#[test]
+fn type_alias() {
+    type Kilometer = i32;
+    let x: i32 = 5;
+    let y: Kilometer = 5;
+    println!("kilometer: {}, asli: {}", x, y);
 }
